@@ -1,0 +1,223 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Albion Build Manager</title>
+  <style>
+    body {
+      background-color: #1e2a38;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #14202e;
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+    .build {
+      background-color: #253446;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 10px #0005;
+    }
+    .build h2 {
+      margin-top: 0;
+    }
+    .items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .item {
+      background-color: #34495e;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+    }
+    .build-form {
+      margin: 20px;
+      padding: 20px;
+      background-color: #2e3b4f;
+      border-radius: 12px;
+    }
+    .build-form input, .build-form button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+    }
+    .build-form input {
+      width: 200px;
+    }
+    .build-form button {
+      background-color: #1abc9c;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Swap button styles */
+    .swap-btn {
+      margin-left: 8px;
+      background-color: #1abc9c;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+      padding: 2px 6px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>Albion Online Build Manager</header>
+
+  <div class="build-form">
+    <input type="text" id="buildName" placeholder="Build Name" />
+    <input type="text" id="itemList" placeholder="Items (comma-separated, use / for swaps)" />
+    <button onclick="addBuild()">Add Build</button>
+  </div>
+
+  <div class="container" id="buildContainer">
+    <!-- Example builds can remain or you can remove them -->
+  </div>
+
+  <script>
+    function addBuild() {
+      const name = document.getElementById('buildName').value.trim();
+      const rawItems = document.getElementById('itemList').value.trim().split(',');
+
+      if (!name || rawItems.length === 0 || rawItems[0] === "") return;
+
+      addBuildByData(name, rawItems);
+
+      // Clear inputs
+      document.getElementById('buildName').value = '';
+      document.getElementById('itemList').value = '';
+    }
+
+    function addBuildByData(name, itemsArray) {
+      if (!name || itemsArray.length === 0) return;
+
+      const buildDiv = document.createElement('div');
+      buildDiv.className = 'build';
+
+      const title = document.createElement('h2');
+      title.textContent = name;
+      buildDiv.appendChild(title);
+
+      const itemContainer = document.createElement('div');
+      itemContainer.className = 'items';
+
+      itemsArray.forEach(rawItem => {
+        const swapOptions = rawItem.split('/').map(s => s.trim()).filter(Boolean);
+        if (swapOptions.length === 0) return;
+
+        let currentIndex = 0;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+
+        // Show first option
+        itemDiv.textContent = swapOptions[currentIndex];
+
+        if (swapOptions.length > 1) {
+          const swapBtn = document.createElement('button');
+          swapBtn.className = 'swap-btn';
+          swapBtn.textContent = '⇄';
+          swapBtn.title = 'Swap item';
+
+          swapBtn.onclick = () => {
+            currentIndex = (currentIndex + 1) % swapOptions.length;
+            itemDiv.textContent = swapOptions[currentIndex];
+            itemDiv.appendChild(swapBtn);
+          };
+
+          itemDiv.appendChild(swapBtn);
+        }
+
+        itemContainer.appendChild(itemDiv);
+      });
+
+      buildDiv.appendChild(itemContainer);
+      document.getElementById('buildContainer').appendChild(buildDiv);
+    }
+
+    // Example of adding a build on page load programmatically
+    window.onload = () => {addBuildByData('Catch (1h mace)', [ 
+        'Skinners cap/royal helmet',
+        'Graveguard armor/Duskweaver armor',
+        'Hunter shoes', 
+        'Bridg cape /Smugglers cape',
+        'Leering cane'
+      ]); 
+addBuildByData('Catch (GA)', [ 
+        'Judi helmet/skinner cap',
+        'gravegaurd armor',
+        'Hunter shoes',
+        'Bridg cape/Smugglers cape'
+      ]);addBuildByData('Catch (Grail)', [ 
+        'skinner cap',
+        'gravegaurd armor',
+        'Hunter shoes',
+        'Bridg cape/demon cape'
+      ]);addBuildByData(' Frost)', [ 
+        'Helmet of valor/fiend cowl',
+        'assasin jacket',
+        'royal sandals',
+        'morgana cape',
+        'cryptcandle',
+      ]); 
+addBuildByData(' BP)', [ 
+        'Helmet of valor/fiend cowl',
+        'assasin jacket',
+        'royal sandals',
+        'bearpaws',
+        'Bridg cape'
+      ]); 
+addBuildByData(' Claws)', [ 
+        'Helmet of valor/fiend cowl',
+        'assasin jacket',
+        'royal sandals',
+        'claws',
+        'demon cape'
+      ]);
+ addBuildByData(' deathgivers 8.1/ high spec)', [ 
+        'stalker hood ',
+        'assasin jacket',
+        'royal sandals',
+        'thet cape'
+      ]);
+  addBuildByData(' daggerpair 8.1/high spec)', [ 
+        'royal hood/find cowl',
+        'assasin jacket',
+        'royal sandals',
+        'thet cape'
+      ]); addBuildByData(' cursed)', [ 
+        'Helmet of valor',
+        'assasin jacket',
+        'royal sandals',
+        'carleon cape'
+      ]); addBuildByData(' twinslayers)', [ 
+        'stalker hood',
+        'assasin jacket',
+        'royal sandals',
+        'thet cape'
+      ]); 
+
+    };
+  </script>
+</body>
+</html>
